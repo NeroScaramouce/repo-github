@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content=" width=device-width, initial-scale=1.0">
+    <title>Daftar Kontak - Manajemen Kontak</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Style navbar yang sama */
+        .navbar {
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar-menu a:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .navbar-menu a.active {
+            background-color: rgba(255,255,255,0.3);
+        }
+
+        .contacts-list {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .contact-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+
+        .contact-item h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .contact-item p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+      <!-- Navbar -->
+      <nav class="navbar">
+        <a href="dashboard.html" class="navbar-brand">Manajemen Kontak</a>  
+        <div class="navbar-menu">
+            <a href="dashboard.html" id="dashboardLink">Dashboard</a>
+            <a href="add-contact.html" id="addContactLink">Tambah Kontak</a>
+            <a href="view-contacts.html" id="viewContactsLink">Daftar Kontak</a>
+        </div>
+
+        <div class="user-profile">
+            <span id="currentUsername"></span>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Konten Halaman -->
+    <div class="contacts-list">
+        <h2>Daftar Kontak</h2>
+        <div id="contactItems"></div>
+    </div>
+
+    <!-- Script -->
+    <script src="js/user-manager.js"></script>
+    <script src="js/contact-manager.js"></script>
+    <script>
+        // Fungsi untuk menandai menu aktif
+        function setActiveNavLink() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = {
+                'dashboard.html': 'dashboardLink',
+                'add-contact.html': 'addContactLink',
+                'view-contacts.html': 'viewContactsLink'
+            };
+
+            // Hapus kelas active dari semua link
+            document.querySelectorAll('.navbar-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Tambahkan kelas active ke link halaman saat ini
+            const activeLink = document.getElementById(navLinks[currentPage]);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            // Tampilkan username
+            const currentUsername = localStorage.getItem('currentUser ') || 'Pengguna';
+            document.getElementById('currentUsername').textContent = currentUsername;
+        }
+
+        // Fungsi untuk menampilkan daftar kontak
+        function displayContacts() {
+            const contacts = contactManager.getAllContacts();
+            const contactItemsContainer = document.getElementById('contactItems');
+            contactItemsContainer.innerHTML = '';
+
+            contacts.forEach(contact => {
+                const contactDiv = document.createElement('div');
+                contactDiv.classList.add('contact-item');
+                contactDiv.innerHTML = `
+                    <h3>${contact.name}</h3>
+                    <p>Email: ${contact.email}</p>
+                    <p>Telepon: ${contact.phone}</p>
+                    <p>Kategori: ${contact.category}</p>
+                `;
+                contactItemsContainer.appendChild(contactDiv);
+            });
+
+ if (contacts.length === 0) {
+                contactItemsContainer.innerHTML = '<p>Tidak ada kontak yang ditemukan.</p>';
+            }
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            setActiveNavLink();
+            displayContacts();
+
+            // Tambahkan event listener untuk logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            logoutBtn.addEventListener('click', () => {
+                // Hapus data login
+                localStorage.removeItem('currentUser ');
+                // Redirect ke halaman login
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>

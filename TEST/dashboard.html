@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Manajemen Kontak</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Style Navbar */
+        .navbar {
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar-menu a:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .navbar-menu a.active {
+            background-color: rgba(255,255,255,0.3);
+        }
+
+        /* Dashboard Styles */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .dashboard-stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            flex: 1;
+        }
+
+        .stat-card h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .quick-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .quick-action-btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .quick-action-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .recent-contacts {
+            margin-top: 30px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .recent-contact-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .recent-contact-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="dashboard.html" class="navbar-brand">Manajemen Kontak</a>  
+        <div class="navbar-menu">
+            <a href="dashboard.html" id="dashboardLink">Dashboard</a>
+            <a href="add-contact.html" id="addContactLink">Tambah Kontak</a>
+            <a href="view-contacts.html" id="viewContactsLink">Daftar Kontak</a>
+        </div>
+
+        <div class="user-profile">
+            <span id="currentUsername"></span>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Konten Dashboard -->
+    <div class="dashboard-container">
+        <h1 id="welcomeMessage">Selamat Datang</h1>
+
+        <!-- Statistik -->
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Total Kontak</h3>
+                <p id="totalContacts">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Kategori</h3>
+                <p id="totalCategories">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Kontak Baru Hari Ini</h3>
+                <p id="newContactsToday">0</p>
+            </div>
+        </div>
+
+        <!-- Aksi Cepat -->
+        <div class="quick-actions">
+            <a href="add-contact.html" class="quick-action-btn">
+                Tambah Kontak Baru
+            </a>
+            <a href="view-contacts.html" class="quick-action-btn">
+                Lihat Semua Kontak
+            </a>
+        </div>
+
+        <!-- Kontak Terbaru -->
+        <div class="recent-contacts">
+            <h2>Kontak Terbaru</h2>
+            <div id="recentContactsList">
+                <!-- Kontak terbaru akan ditambahkan di sini -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="js/user-manager.js"></script>
+    <script src="js/contact-manager.js"></script>
+    <script>
+        // Fungsi untuk menandai menu aktif
+        function setActiveNavLink() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = {
+                'dashboard.html': 'dashboardLink',
+                'add-contact.html': 'addContactLink',
+                'view-contacts.html': 'viewContactsLink'
+            };
+
+            // Hapus kelas active dari semua link
+            document.querySelectorAll('.navbar-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Tambahkan kelas active ke link halaman saat ini
+            const activeLink = document.getElementById(navLinks[currentPage]);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            // Tampilkan username
+            const currentUsername = localStorage.getItem('currentUser') || 'Pengguna';
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const currentUsernameSpan = document.getElementById('currentUsername');
+            
+            welcomeMessage.textContent = `Selamat Datang, ${currentUsername}`;
+            currentUsernameSpan.textContent = currentUsername;
+        }
+
+        // Fungsi update statistik dashboard
+        function updateDashboardStats() {
+            const contacts = contactManager.getAllContacts();
+            
+            // Total kontak
+            document.getElementById('totalContacts').textContent = contacts.length;
+
+            // Kategori unik
+            const categories = new Set(contacts.map(c => c.category));
+            document.getElementById('totalCategories').textContent = categories.size;
+
+            // Kontak baru hari ini
+            const today = new Date().toLocaleDateString();
+            const newContacts = contacts.filter(contact => 
+                new Date(contact.createdAt).toLocaleDateString() === today
+            );
+            document.getElementById('newContactsToday').textContent = newContacts.length;
+
+            // Tampilkan 5 kontak terbaru
+            const recentContactsList = document.getElementById('recentContactsList');
+            recentContactsList.innerHTML = '';
+            const recentContacts = contacts.slice(-5).reverse(); // Ambil 5 kontak terbaru
+
+            recentContacts.forEach(contact => {
+                const contactDiv = document.createElement('div');
+                contactDiv.classList.add('recent-contact-item');
+                contactDiv.innerHTML = `
+                    <span>${contact.name}</span>
+                    <span>${contact.email}</span>
+                `;
+                recentContactsList.appendChild(contactDiv);
+            });
+
+            if (recentContacts.length === 0) {
+                recentContactsList.innerHTML = '<p>Tidak ada kontak terbaru. </p>';
+            }
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            setActiveNavLink();
+            updateDashboardStats();
+
+            // Tambahkan event listener untuk logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            logoutBtn.addEventListener('click', () => {
+                // Hapus data login
+                localStorage.removeItem('currentUser ');
+                // Redirect ke halaman login
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>

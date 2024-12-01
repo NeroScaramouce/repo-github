@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi - Manajemen Kontak</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <h1>Daftar Akun Baru</h1>
+        <form id="registerForm">
+            <input 
+                type="text" 
+                id="regUsername" 
+                placeholder="Username" 
+                required
+            >
+            <input 
+                type="email" 
+                id="regEmail" 
+                placeholder="Email" 
+                required
+            >
+            <input 
+                type="password" 
+                id="regPassword" 
+                placeholder="Password" 
+                required
+            >
+            <input 
+                type="password" 
+                id="confirmPassword" 
+                placeholder="Konfirmasi Password" 
+                required
+            >
+            <button type="submit">Daftar</button>
+        </form>
+        <p class="login-link">
+            Sudah punya akun? 
+            <a href="index.html">Login</a>
+        </p>
+    </div>
+
+    <script src="js/user-manager.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
